@@ -1,0 +1,15 @@
+.classpath
+.settings
+.idea
+.project
+.pydevproject
+.DS_Store
+*.pyc
+*.log
+.akconfig
+local_test/
+tests/
+.hg
+.pytest_cache
+logs/
+config.py
