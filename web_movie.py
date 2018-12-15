@@ -1,0 +1,83 @@
+#!/usr/bin/env python
+# encoding: utf-8
+#
+# Copyright (c) 2018 alibaba-inc. All Rights Reserved
+#
+
+"""
+File: web_movie.py
+Date: 2018-12-01 15:03
+Author: wang.gaofei@alibaba-inc.com
+"""
+from flask import Flask, render_template, request, redirect, url_for, session, g
+import config,os
+from base.find_file import find_file
+from base.update_db import scan_local_path
+from exts import db
+from models import Movies
+from sqlalchemy import or_
+
+
+app = Flask(__name__)
+app.config.from_object(config)
+db.init_app(app)
+
+@app.route('/')
+def index():
+    # items=[
+    #     {
+    #         "name":u"高颜值性感网红美女瞳瞳私会情人各种姿势爆操呻吟大叫：插死我,好硬,好硬啊,干死我!第一次见那么诱人的鲍鱼!的副本 2",
+    #         "url":"detail/02298128/",
+    #         "photo":"ddd/02298128/1.jpg"
+    #     },
+    #     {
+    #         "name":u"高颜值性感网红美女瞳瞳私会情人各种姿势爆操呻吟大叫：插死我,好硬,好硬啊,干死我!第一次见那么诱人的鲍鱼!的副本 2",
+    #         "url":"detail/02298128/",
+    #         "photo":"ddd/02298128/1.jpg"
+    #     },
+    # ]
+
+    movies = Movies.query.filter(Movies.is_del==False).order_by('-create_time')
+
+    items = []
+    for movie in movies:
+        item={
+            "name":movie.name,
+            "url":url_for('detail',path=movie.detail_path),
+            "photo_url":"ddd/%s/%s" % (movie.detail_path,movie.photo_path)
+        }
+        items.append(item)
+
+    return render_template('index.html', items=items)
+
+
+@app.route('/detail/<path>/')
+def detail(path):
+    host = request.headers.get('Host')
+    print host
+    detail = {
+        "photos":find_file(path, ".jpg", web_dir="//%s/ddd/" % host, filter_word="QR-1024"),
+        "movies":find_file(path, ".mp4", web_dir="//%s/ddd/" % host, filter_word="QR-1024")
+    }
+    try:
+        detail['movies'].sort(reverse=True)
+        detail['title'] = os.path.basename(detail['movies'][0])
+    except:
+        detail['title'] = u"未找到文件名"
+
+    print detail
+    return render_template('detail.html',detail=detail)
+
+@app.route('/update/')
+def update():
+    scan_local_path()
+    return u"本地数据扫描完毕。"
+
+
+@app.route('/hello/')
+def hello():
+    return render_template('hello.html')
+
+
+if __name__ == '__main__':
+    app.run()

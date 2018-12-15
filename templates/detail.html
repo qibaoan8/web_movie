@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ detail.title }}</title>
+</head>
+<body>
+
+<div class="titel">
+    <h1>{{ detail.title }}</h1>
+</div>
+
+<div class="photo_group">
+    {% for photo in detail.photos %}
+        <img src="{{ photo }}" alt="">
+    {% endfor %}
+
+</div>
+
+
+
+<div class="movie_group">
+    {% for movie in detail.movies %}
+        <video controls="" name="media">
+                <source src="{{ movie }}" type="video/mp4">
+        </video>
+    {% endfor %}
+</div>
+
+
+
+</body>
+</html>
