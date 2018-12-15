@@ -24,18 +24,6 @@ db.init_app(app)
 
 @app.route('/')
 def index():
-    # items=[
-    #     {
-    #         "name":u"高颜值性感网红美女瞳瞳私会情人各种姿势爆操呻吟大叫：插死我,好硬,好硬啊,干死我!第一次见那么诱人的鲍鱼!的副本 2",
-    #         "url":"detail/02298128/",
-    #         "photo":"ddd/02298128/1.jpg"
-    #     },
-    #     {
-    #         "name":u"高颜值性感网红美女瞳瞳私会情人各种姿势爆操呻吟大叫：插死我,好硬,好硬啊,干死我!第一次见那么诱人的鲍鱼!的副本 2",
-    #         "url":"detail/02298128/",
-    #         "photo":"ddd/02298128/1.jpg"
-    #     },
-    # ]
 
     movies = Movies.query.filter(Movies.is_del==False).order_by('-create_time')
 
@@ -54,7 +42,6 @@ def index():
 @app.route('/detail/<path>/')
 def detail(path):
     host = request.headers.get('Host')
-    print host
     detail = {
         "photos":find_file(path, ".jpg", web_dir="//%s/ddd/" % host, filter_word="QR-1024"),
         "movies":find_file(path, ".mp4", web_dir="//%s/ddd/" % host, filter_word="QR-1024")
@@ -65,7 +52,6 @@ def detail(path):
     except:
         detail['title'] = u"未找到文件名"
 
-    print detail
     return render_template('detail.html',detail=detail)
 
 @app.route('/update/')

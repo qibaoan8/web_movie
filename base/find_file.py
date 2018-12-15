@@ -12,6 +12,7 @@ Author: wang.gaofei@alibaba-inc.com
 
 import os,sys
 from config import RESOURCE_PATH
+from str_coding import str_coding
 
 reload(sys)
 sys.setdefaultencoding( "utf-8" )
@@ -34,7 +35,9 @@ def find_file(find_dir, end_key_work, web_dir="", filter_word="QR-1024"):
         if web_path[-len(end_key_work):].lower() == end_key_work.lower():
             if (filter_word == "" or
                     (filter_word != "" and file_list[i].lower().find(filter_word.lower()) == -1)):
-                ret_file.append(web_path.decode('utf-8'))
+                # 转换文件名的字符集
+                web_path = str_coding(web_path)
+                ret_file.append(web_path)
     ret_file.sort()
     return ret_file
 

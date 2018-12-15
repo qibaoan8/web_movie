@@ -13,3 +13,4 @@ tests/
 .pytest_cache
 logs/
 config.py
+base/cookie.txt

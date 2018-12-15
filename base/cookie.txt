@@ -1,5 +1,0 @@
-#LWP-Cookies-2.0
-Set-Cookie3: C_user=705940; path="/"; domain=".dufile.com"; path_spec; domain_dot; expires="2018-12-14 18:02:14Z"; version=0
-Set-Cookie3: C_user_id=2018121414243276442; path="/"; domain=".dufile.com"; path_spec; domain_dot; expires="2018-12-14 18:02:14Z"; version=0
-Set-Cookie3: __cfduid=d2171418931c31d79c809dc7a7717cf301544754692; path="/"; domain=".dufile.com"; path_spec; domain_dot; expires="2019-12-14 02:31:32Z"; HttpOnly=None; version=0
-Set-Cookie3: PHPSESSID=ktvh3ftfjd84bpicijocs36u93; path="/"; domain="dufile.com"; path_spec; discard; version=0

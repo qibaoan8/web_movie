@@ -15,6 +15,7 @@ from models import Movies
 from exts import db
 from config import RESOURCE_PATH
 from base.find_file import find_file
+from str_coding import str_coding
 
 def inset_db_from_local(movie_name, detail_path, photo_path):
     """
@@ -56,8 +57,9 @@ def scan_local_path():
 
             try:
                 movie_list.sort(reverse=True)
-                movie_name = movie_list[0].split("/")[1]
-            except:
+                movie_name = os.path.basename(movie_list[0])
+                movie_name = str_coding(movie_name)
+            except Exception as e:
                 movie_name = u"未找到影片名称"
 
             inset_db_from_local(movie_name,detail_path,photo_path)
