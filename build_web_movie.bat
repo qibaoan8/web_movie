@@ -5,5 +5,5 @@ rmdir /s/q dist
 rmdir /s/q build
 del PythonService.spec
 pyinstaller -F --add-data "templates;templates" --add-data "static;static" PythonService.py
-dist\PythonService.exe install
+dist\PythonService.exe --startup auto install
 sc start web_movie 
