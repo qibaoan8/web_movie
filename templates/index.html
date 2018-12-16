@@ -5,16 +5,14 @@
     <title>Title</title>
 </head>
 <body>
-
     {% for item in items %}
-        <ul>
         <a href="{{ item.url }}">
             {{ item.name }}
+            <br>
             <img src="{{ item.photo_url }}" alt="">
         </a>
-        </ul>
+        <br>
     {% endfor %}
-
 
 </body>
 </html>
