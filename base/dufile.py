@@ -9,7 +9,7 @@ File: dufile.py
 Date: 2018-12-02 23:50
 Author: wang.gaofei@alibaba-inc.com 
 """
-import os, requests, cookielib
+import os, requests, cookielib, time
 from http_base import get_url_host
 from config import RESOURCE_PATH
 from download_movie import Down_Load
@@ -142,7 +142,7 @@ class DuFile():
         res = self.session.post(url,data=post_data,headers=headers)
         return res.content
 
-def main():
+def start():
     down_local_path = RESOURCE_PATH
     df = DuFile()
 
@@ -173,7 +173,8 @@ def main():
             unzip_file(os.path.join(down_local_path,file_name))
 
             # exit()
+        time.sleep(600)
         file_list = df.get_file_list()
 
 if __name__ == '__main__':
-    main()
+    start()

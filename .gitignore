@@ -14,3 +14,9 @@ tests/
 logs/
 config.py
 base/cookie.txt
+build/
+dist/
+base/build/
+base/dist/
+PythonService.spec
+base/PythonService.spec

@@ -46,6 +46,7 @@ def scan_local_path():
     path_list = os.listdir(RESOURCE_PATH)
     for path in path_list:
         all_path = os.path.join(RESOURCE_PATH, path)
+
         if os.path.isdir(all_path):
             detail_path = path
             photo_list = find_file(path, ".jpg")
@@ -61,7 +62,6 @@ def scan_local_path():
                 movie_name = str_coding(movie_name)
             except Exception as e:
                 movie_name = u"未找到影片名称"
-
             inset_db_from_local(movie_name,detail_path,photo_path)
 
     return ""

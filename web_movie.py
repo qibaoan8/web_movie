@@ -24,7 +24,6 @@ db.init_app(app)
 
 @app.route('/')
 def index():
-
     movies = Movies.query.filter(Movies.is_del==False).order_by('-create_time')
 
     items = []
