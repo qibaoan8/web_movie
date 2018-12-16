@@ -56,7 +56,7 @@ def unzip_file(file_name, filter_words=['.mht','.url','QR-1024']):
                 os.mkdir(_dir_name)
             print _zip_file_name
             file_data = zip_file.read(file)
-            fo = open(_zip_file_name, "w")
+            fo = open(_zip_file_name, "wb")
             fo.write(file_data)
             fo.close()
     zip_file.close()
