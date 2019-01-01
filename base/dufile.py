@@ -18,6 +18,7 @@ from cat_photo import yun_da_ma
 from unzip_file import unzip_file
 from log_config import init_log
 
+file_path = os.path.abspath(os.path.dirname(__file__))
 log = init_log("dufile_logic","../logs/")
 
 class DuFile():
