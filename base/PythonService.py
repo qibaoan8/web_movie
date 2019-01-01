@@ -4,6 +4,9 @@ import win32service
 import win32event
 import sys
 import os
+from log_config import init_log
+
+log = init_log("dufile_logic","../logs/")
 
 
 
@@ -24,8 +27,14 @@ class zlsService(win32serviceutil.ServiceFramework):
         self.run = True
 
     def SvcDoRun(self):
+        import traceback
         from dufile import start
-        start()
+        while True:
+            try:
+                start()
+            except Exception as e:
+                log.info('主程序崩溃，详细信息如下：')
+                traceback.print_exc(file=open('../logs/dufile_logic.log','a'))
 
     def SvcStop(self):
         self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
