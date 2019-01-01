@@ -17,6 +17,7 @@ from config import DUFILE_USERNAME,DUFILE_PASSWORD
 from cat_photo import yun_da_ma
 from unzip_file import unzip_file
 from log_config import init_log
+from testing_speed import testing_speed
 
 file_path = os.path.abspath(os.path.dirname(__file__))
 log = init_log("dufile_logic","../logs/")
@@ -34,7 +35,6 @@ class DuFile():
         self.session.cookies = cookielib.LWPCookieJar(self.cookie_path)
         if os.path.exists(self.cookie_path):
             self.session.cookies.load(ignore_discard=True, ignore_expires=True)
-
 
     def check_login(self, key = DUFILE_USERNAME):
         url = 'http://dufile.com/member/'
@@ -164,7 +164,22 @@ def start():
             file_name = file_object['file_name']
             file_id = file_object['file_id']
             urls = file_object['urls']
-            url = urls[1]
+            log.info('开始测试url的下载速度，一个5秒')
+            speed_json = {}
+            headers = {
+                'Cookie':"C_user_id=%s" %
+                         requests.utils.dict_from_cookiejar(df.session.cookies)['C_user_id']
+            }
+            for url in urls:
+                speed = testing_speed(url,headers=headers)
+                speed_json[str(speed)] = url
+                log.info('测速：%s B/s , url:%s'%(speed,url))
+
+            speeds = map(int, speed_json.keys())
+            max_speed = max(speeds)
+            max_url = speed_json.get(str(max_speed))
+            log.info('最大速度：%s B/s , url:%s'%(max_speed, max_url))
+            url = max_url
 
             log.info('文件：%s, 下载地址: %s' %(file_name,url))
             down = Down_Load(5, df.session.cookies)
