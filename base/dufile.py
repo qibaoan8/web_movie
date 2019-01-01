@@ -147,7 +147,7 @@ class DuFile():
 def start():
     down_local_path = RESOURCE_PATH
     df = DuFile()
-
+    log.info('开始判断登陆状态')
     while not df.check_login():
         log.info('正在登陆...')
         status = df.login(DUFILE_USERNAME, DUFILE_PASSWORD)
