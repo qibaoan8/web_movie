@@ -16,6 +16,9 @@ from download_movie import Down_Load
 from config import DUFILE_USERNAME,DUFILE_PASSWORD
 from cat_photo import yun_da_ma
 from unzip_file import unzip_file
+from log_config import init_log
+
+log = init_log("dufile_logic","../logs/")
 
 class DuFile():
     def __init__(self):
@@ -46,7 +49,7 @@ class DuFile():
         verify_url = 'http://dufile.com/yzm.php'
         res = self.session.get(verify_url)
         verify_text = yun_da_ma(res.content)
-        print verify_text
+        log.info('正在登陆-验证码识别:%s' %verify_text)
         login_url = 'http://dufile.com/post.php'
         data = {
             'type':'login',
@@ -58,8 +61,7 @@ class DuFile():
             'Referer':'http://dufile.com/'
         }
         res = self.session.post(login_url,data,headers=headers)
-        print res.content
-        print res.status_code
+        log.info('登陆请求发送结果:%s' %res.content)
 
         return self.check_login()
 
@@ -147,16 +149,15 @@ def start():
     df = DuFile()
 
     while not df.check_login():
-        print "正在登陆"
+        log.info('正在登陆...')
         status = df.login(DUFILE_USERNAME, DUFILE_PASSWORD)
-        print status
+        log.info('登陆状态：%s' %status)
 
-    print "登陆成功"
-
+    log.info('登陆成功')
     df.save_cookie()
 
     file_list = df.get_file_list()
-
+    log.info('获取页面上的文件列表，共计%s个' %len(file_list))
     while file_list:
         for file_object in file_list:
             file_name = file_object['file_name']
@@ -164,14 +165,16 @@ def start():
             urls = file_object['urls']
             url = urls[1]
 
+            log.info('文件：%s, 下载地址: %s' %(file_name,url))
             down = Down_Load(5, df.session.cookies)
-            print url
             file_length = down.get_file_length(url)
-            print file_length
+            log.info('文件大小为:%s' %file_length)
             down.download(url, file_name, down_local_path, file_length / 2 + 1)
+            log.info('下载完毕，正在将文件移动到已下载目录')
             df.mv_dir(file_id,0,1) # 1 已下载
+            log.info('目录移动完毕，正在解压文件')
             unzip_file(os.path.join(down_local_path,file_name))
-
+            log.info('文件解压完毕')
             # exit()
         time.sleep(600)
         file_list = df.get_file_list()
