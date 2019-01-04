@@ -3,13 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>所有电影集合</title>
-        <style>
-        .img {
-            background-size:contain|cover;
-            max-width:100%;
-            height: auto;
-        }
-    </style>
+
 </head>
 <body>
 <div id="photo_group">
@@ -17,7 +11,7 @@
         <a href="{{ item.url }}">
             {{ item.name }}
             <br>
-            <img src="{{ item.photo_url }}" alt="">
+            <img src="{{ item.photo_url }}" alt="" style="max-width:100%; height: auto;">
         </a>
         <br>
     {% endfor %}

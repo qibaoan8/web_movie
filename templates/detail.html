@@ -22,6 +22,7 @@
 <div class="photo_group" >
     {% for photo in detail.photos %}
         <img src="{{ photo }}" alt="">
+        <br>
     {% endfor %}
 
 </div>
@@ -30,10 +31,10 @@
 
 <div id="movie_group">
     {% for movie in detail.movies %}
-        <div id="nihao" style="width: 600px; height: 400px;"></div>
+        <div id="{{ movie }}" style="width: 600px; height: 400px;"></div>
         <script type="text/javascript">
 			var videoObject = {
-				container: '#nihao', //容器的ID或className
+				container: '#{{ movie }}', //容器的ID或className
 				variable: 'player', //播放函数名称
 				loop: false, //播放结束是否循环播放
 				//autoplay: true, //是否自动播放
