@@ -3,6 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ detail.title }}</title>
+    <script type="text/javascript" src="{{ url_for('static',filename='ckplayer.js') }}" charset="UTF-8"></script>
+    <style>
+        .photo_group img {
+            background-size:contain|cover;
+            max-width:100%;
+            height: auto;
+        }
+    </style>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
 </head>
 <body>
 
@@ -10,7 +19,7 @@
     <h1>{{ detail.title }}</h1>
 </div>
 
-<div class="photo_group">
+<div class="photo_group" >
     {% for photo in detail.photos %}
         <img src="{{ photo }}" alt="">
     {% endfor %}
@@ -19,11 +28,31 @@
 
 
 
-<div class="movie_group">
+<div id="movie_group">
     {% for movie in detail.movies %}
-        <video controls="" name="media">
-                <source src="{{ movie }}" type="video/mp4">
-        </video>
+        <div id="{{ movie }}" style="width: 600px; height: 400px;"></div>
+        <script type="text/javascript">
+			var videoObject = {
+				container: '#{{ movie }}', //容器的ID或className
+				variable: 'player', //播放函数名称
+				loop: false, //播放结束是否循环播放
+				//autoplay: true, //是否自动播放
+				//poster: 'material/poster.jpg', //封面图片
+
+				drag: 'start', //拖动的属性
+				seek: 0, //默认跳转的时间
+				playbackrate:1,//默认速度的编号，只对html5有效,设置成-1则不显示倍速
+
+				mobileCkControls:true,//是否在移动端（包括ios）环境中显示控制栏
+				video: [
+			        ['{{ movie }}', 'video/mp4', '中文标清', 0],
+			    ]
+
+			};
+			var player = new ckplayer(videoObject);
+
+		</script>
+
     {% endfor %}
 </div>
 
