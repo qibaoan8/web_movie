@@ -45,6 +45,11 @@ def detail(path):
         "photos":find_file(path, ".jpg", web_dir="//%s/ddd/" % host, filter_word="QR-1024"),
         "movies":find_file(path, ".mp4", web_dir="//%s/ddd/" % host, filter_word="QR-1024")
     }
+    # 添加视频路径的\ 转 换成 /  。。好无语。
+    movies = []
+    for movie in detail['movies']:
+        movies.append(movie.replace('\\','/'))
+    detail['movies'] = movies
     try:
         detail['movies'].sort(reverse=True)
         detail['title'] = os.path.basename(detail['movies'][0])

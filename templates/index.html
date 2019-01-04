@@ -2,9 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>所有电影集合</title>
+        <style>
+        .img {
+            background-size:contain|cover;
+            max-width:100%;
+            height: auto;
+        }
+    </style>
 </head>
 <body>
+<div id="photo_group">
     {% for item in items %}
         <a href="{{ item.url }}">
             {{ item.name }}
@@ -13,6 +21,7 @@
         </a>
         <br>
     {% endfor %}
+</div>
 
 </body>
 </html>

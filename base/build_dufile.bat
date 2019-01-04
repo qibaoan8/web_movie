@@ -5,5 +5,5 @@ rmdir /s/q dist
 rmdir /s/q build
 del PythonService.spec
 pyinstaller PythonService.py
-dist\PythonService\PythonService.exe --startup auto install
+dist\PythonService\PythonService.exe --startup delayed-auto install
 sc start dufile
