@@ -220,10 +220,13 @@ if __name__ == '__main__':
     # dufile 网站使用的还是垃圾的http1.0，range参数只支持从头到中间，从中间到末尾这两种类型。
     # 所以分线程，最多分两个。
 
-    url = "http://vip961.sufile.net:3657/down/e717381c5b933a88.zip?key=nk3%2BAga31lMBmczdn%2BZ2D0uZ1zz8PWMOzoLSDQGYFVc8KHJEteBbrarHOeBYN2x26UEUsnJb%2BuOPbH4ux4PUbKvuX2uymqYJ2e%2FgpmqnoxYbU2%2FuJOYOopKEsWpkfOFiifBCJaaWLBFpl3k0Uvyzr0yVpNfvTipBKg"
+    url = "http://a961.sufile.net:3657/down/5c81379728b20667.zip?key=mBj1UFHt1VBRzcXbn%2Bl%2BW0zDjD3%2Fam0BzoLSDQGYFVc8KHJEteBbrarHOeBYN2x26UEUsnJb%2BuOPbH4ux4PUbKvuX2uymqYJ2OjgpW%2BnoxYbU2%2FuJOYOopKFtmlhfONiifJEIq2RIxJpl3k0Uvyzr0mUp9XsSSBBKg"
     # url = "https://qd.myapp.com/myapp/qqteam/pcqq/QQ9.0.8.exe"
+    cookie = {
+        'C_user_id':'2019010511024220248'
+    }
 
-    down = Down_Load(5)
+    down = Down_Load(5,cookie)
     file_length = down.get_file_length(url)
     down.download(url,"e717381c5b933a88.zip","",file_length/2+1)
 
