@@ -11,12 +11,13 @@ Author: wang.gaofei@alibaba-inc.com
 """
 import requests
 import json, time
+from config import YUNDAMA_USERNAME, YUNDAMA_PASSWORD
 
 def yun_da_ma(photo_2):
 
     data = {
-        'username': 'qibaoan8',
-        'password': 'nizhidao8',
+        'username': YUNDAMA_USERNAME,
+        'password': YUNDAMA_PASSWORD,
         'codetype': '1005',
         'appid': '1',
         'appkey': '22cc5376925e9387a23cf797cb9ba745',
