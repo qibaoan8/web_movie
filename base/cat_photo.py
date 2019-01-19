@@ -9,9 +9,14 @@ File: cat_photo.py
 Date: 2018-12-08 12:08
 Author: wang.gaofei@alibaba-inc.com 
 """
-import requests
+import requests,os
 import json, time
 from config import YUNDAMA_USERNAME, YUNDAMA_PASSWORD
+from log_config import init_log
+
+file_path = os.path.abspath(os.path.dirname(__file__))
+log = init_log("yun_da_ma", "../logs/")
+
 
 def yun_da_ma(photo_2):
 
@@ -31,16 +36,18 @@ def yun_da_ma(photo_2):
     # 发送上述post请求，也就是简单的
     url = 'http://api.yundama.net:5678/api.php?method=upload'
     res = requests.post(url,data, files=files)
-    print res.content
+    log.info('post return is: {}'.format(res.content))
     res_json = json.loads(res.content)
     text = res_json.get('text')
-    if text == '':
+    if not text:
+        log.info('come get code ...')
         url = "http://api.yundama.net:5678/api.php?method=result&cid=%s" % res_json.get('cid')
         for i in range(10):
             time.sleep(2)
             res = requests.get(url)
+            log.info('get return is: {}'.format(res.content))
             res_json = json.loads(res.content)
-            if res_json.get('text') != '':
+            if res_json.get('text'):
                 text = res_json.get('text')
                 break
     return text

@@ -82,6 +82,7 @@ class DuFile():
             # 先获取file id ，存起来
             if line.find('type="checkbox" value="') != -1:
                 file_id = line.split('value="')[1].split('"')[0]
+                log.info('find file id is: {}'.format(file_id))
                 continue
 
             if line.find("name file-title f14") != -1:
@@ -89,9 +90,10 @@ class DuFile():
                 file_name = line.split('title="')[1].split('"')[0]
                 file_page_url = line.split('href="')[1].split('"')[0]
                 file_page_url = "http://dufile.com/vip/" + os.path.basename(file_page_url)
-
+                log.info('find file name is: {}'.format(file_name))
                 _html_body = self.session.get(file_page_url, proxies=self.proxies).content
                 urls = []
+                log.info('get file url info.')
                 for line in _html_body.split("\n"):
 
                     # 获取文件的url
@@ -104,7 +106,9 @@ class DuFile():
                     "urls": urls,
                     "file_id": file_id
                 }
+                log.info('file detail is: {}'.format(file))
                 file_list.append(file)
+                break
 
         return file_list
 
