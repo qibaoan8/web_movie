@@ -13,6 +13,7 @@ import os, requests, cookielib, time
 from http_base import get_url_host
 from config import RESOURCE_PATH
 from download_movie import Down_Load
+from download_movie2 import download_sync
 from config import DUFILE_USERNAME, DUFILE_PASSWORD
 from cat_photo import yun_da_ma
 from unzip_file import unzip_file
@@ -159,43 +160,65 @@ def start():
     log.info('登陆成功')
     df.save_cookie()
 
-    file_list = df.get_file_list()
-    log.info('获取页面上的文件列表，共计%s个' % len(file_list))
-    while file_list:
-        for file_object in file_list:
-            file_name = file_object['file_name']
-            file_id = file_object['file_id']
-            urls = file_object['urls']
-            log.info('开始测试url的下载速度，一个5秒')
-            speed_json = {}
-            headers = {
-                'Cookie': "C_user_id=%s" %
-                          requests.utils.dict_from_cookiejar(df.session.cookies)['C_user_id']
-            }
-            for url in urls:
-                speed = testing_speed(url, headers=headers)
-                speed_json[str(speed)] = url
-                log.info('测速：%s B/s , url:%s' % (speed, url))
+    while True:
+        file_list = df.get_file_list()
+        df.save_cookie()
+        log.info('获取页面上的文件列表，共计%s个' % len(file_list))
 
-            speeds = map(int, speed_json.keys())
-            max_speed = max(speeds)
-            max_url = speed_json.get(str(max_speed))
-            log.info('最大速度：%s B/s , url:%s' % (max_speed, max_url))
-            url = max_url
+        if len(file_list) == 0:
+            time.sleep(600)
+            continue
 
-            log.info('文件：%s, 下载地址: %s' % (file_name, url))
-            down = Down_Load(5, df.session.cookies)
-            file_length = down.get_file_length(url)
-            log.info('文件大小为:%s' % file_length)
-            down.download(url, file_name, down_local_path, file_length / 2 + 1)
+        file_object = file_list[0]
+        file_name = file_object['file_name']
+        file_id = file_object['file_id']
+        urls = file_object['urls']
+        log.info('开始测试url的下载速度，一个5秒')
+        speed_json = {}
+        headers = {
+            'Cookie': "C_user_id=%s" %
+                      requests.utils.dict_from_cookiejar(df.session.cookies)['C_user_id']
+        }
+        for url in urls:
+            speed = testing_speed(url, headers=headers)
+            speed_json[str(speed)] = url
+            log.info('测速：%s B/s , url:%s' % (speed, url))
+
+        speeds = map(int, speed_json.keys())
+        max_speed = max(speeds)
+        max_url = speed_json.get(str(max_speed))
+        log.info('最大速度：%s B/s , url:%s' % (max_speed, max_url))
+        url = max_url
+
+        log.info('文件：%s, 下载地址: %s' % (file_name, url))
+
+        # 旧版下载方法
+        # down = Down_Load(5, df.session.cookies)
+        # file_length = down.get_file_length(url)
+        # log.info('文件大小为:%s' % file_length)
+        # down.download(url, file_name, down_local_path, file_length / 2 + 1)
+
+        # 新版下载方法
+        # C_user_id=2019011921022040087
+        cookies = {
+            'C_user_id':requests.utils.dict_from_cookiejar(df.session.cookies)['C_user_id']
+        }
+
+        download_status = download_sync({
+            'url':url,
+            'path':os.path.join(down_local_path,file_name),
+            'cookies': cookies
+        })
+
+        if download_status:
             log.info('下载完毕，正在将文件移动到已下载目录')
             df.mv_dir(file_id, 0, 1)  # 1 已下载
             log.info('目录移动完毕，正在解压文件')
             unzip_file(os.path.join(down_local_path, file_name))
             log.info('文件解压完毕')
-            # exit()
-        time.sleep(600)
-        file_list = df.get_file_list()
+        else:
+            log.info("下载超时，重新刷新再下载")
+
 
 if __name__ == '__main__':
     start()
