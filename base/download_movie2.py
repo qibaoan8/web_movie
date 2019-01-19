@@ -52,8 +52,6 @@ class Download(threading.Thread):
 
     def do_download(self, url, filename, headers, cookies):
 
-        print "cookies"
-        print cookies
         # 获取文件大小
         self.file_size_all = int(requests.head(url,headers=headers,cookies=cookies).
                                  headers['Content-Length'])
@@ -111,7 +109,6 @@ def download_sync(down_object, timeout=3600):
 
     sleep_time = 0
     while not download.finish:
-        print "download.waiting...3"
         time.sleep(3)
         sleep_time += 3
         if sleep_time > timeout:
