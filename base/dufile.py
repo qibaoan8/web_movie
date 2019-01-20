@@ -19,6 +19,7 @@ from cat_photo import yun_da_ma
 from unzip_file import unzip_file
 from log_config import init_log
 from testing_speed import testing_speed
+from convert_video import find_convert
 
 file_path = os.path.abspath(os.path.dirname(__file__))
 log = init_log("dufile_logic", "../logs/")
@@ -155,16 +156,17 @@ class DuFile():
 def start():
     down_local_path = RESOURCE_PATH
     df = DuFile()
-    log.info('开始判断登陆状态')
-    while not df.check_login():
-        log.info('正在登陆...')
-        status = df.login(DUFILE_USERNAME, DUFILE_PASSWORD)
-        log.info('登陆状态：%s' % status)
-
-    log.info('登陆成功')
-    df.save_cookie()
 
     while True:
+        log.info('开始判断登陆状态')
+        while not df.check_login():
+            log.info('正在登陆...')
+            status = df.login(DUFILE_USERNAME, DUFILE_PASSWORD)
+            log.info('登陆状态：%s' % status)
+
+        log.info('登陆成功')
+        df.save_cookie()
+
         file_list = df.get_file_list()
         df.save_cookie()
         log.info('获取页面上的文件列表，共计%s个' % len(file_list))
@@ -219,7 +221,9 @@ def start():
             df.mv_dir(file_id, 0, 1)  # 1 已下载
             log.info('目录移动完毕，正在解压文件')
             unzip_file(os.path.join(down_local_path, file_name))
-            log.info('文件解压完毕')
+            log.info('文件解压完毕,开始转换视频文件')
+            find_convert(os.path.join(down_local_path, file_name)[:-4])
+            log.info("视频文件转换完毕")
         else:
             log.info("下载超时，重新刷新再下载")
 

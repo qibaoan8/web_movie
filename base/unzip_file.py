@@ -14,7 +14,7 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 
 
-def unzip_file(file_name, filter_words=['.mht','.url','QR-1024']):
+def unzip_file(file_name, filter_words=['.mht','.url','QR-1024','htm']):
     """
     通过文件名的绝对路径进行解压，然后删除源文件。
     :param file_name:
@@ -63,8 +63,11 @@ def unzip_file(file_name, filter_words=['.mht','.url','QR-1024']):
     # os.remove(file_name)
 
 if __name__ == '__main__':
-    # unzip_file("/Users/wang.gaofei/d/ddd/49084452.zip")
-
+    from convert_video import find_convert
+    path = "J:\ddd\web_scan\\29821482.zip"
+    unzip_file(path)
+    find_convert(path[:-4])
+    exit()
     from config import RESOURCE_PATH
     for name in  os.listdir(RESOURCE_PATH):
         if name.find('.zip') != -1:

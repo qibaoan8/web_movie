@@ -29,5 +29,8 @@ def str_coding(text):
         if encoding == 'GB2312':
             text = text.decode('gb18030')
         else:
-            text = text.decode('utf-8')
+            try:
+                text = text.decode('utf-8')
+            except:
+                pass
     return text

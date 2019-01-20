@@ -49,10 +49,11 @@ def scan_local_path():
 
         if os.path.isdir(all_path):
             detail_path = path
-            photo_list = find_file(path, ".jpg")
-            movie_list = find_file(path, ".mp4")
+            photo_list = find_file(os.path.join(RESOURCE_PATH, path), ".jpg")
+            movie_list = find_file(os.path.join(RESOURCE_PATH, path), ".mp4")
             try:
-                photo_path = os.path.basename(photo_list[0])
+                # 这个是给首页展示图片的url里面的文件路径 就是ddd/0000/filename.jpg filename.jpg那一部分，可以带目录，但要用/
+                photo_path = photo_list[0].replace('\\','/')
             except:
                 photo_path = ""
 
@@ -63,6 +64,5 @@ def scan_local_path():
             except Exception as e:
                 movie_name = u"未找到影片名称"
             inset_db_from_local(movie_name,detail_path,photo_path)
-
     return ""
 

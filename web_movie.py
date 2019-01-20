@@ -16,6 +16,7 @@ from base.update_db import scan_local_path
 from exts import db
 from models import Movies
 from sqlalchemy import or_
+from config import RESOURCE_PATH
 
 
 app = Flask(__name__)
@@ -41,15 +42,20 @@ def index():
 @app.route('/detail/<path>/')
 def detail(path):
     host = request.headers.get('Host')
+
+    photo_list = []
+    for file in find_file(os.path.join(RESOURCE_PATH,path),'.jpg'):
+        photo_list.append("//{0}/ddd/{1}/{2}".format(host, path, file).replace('\\','/'))
+
+    movie_list = []
+    for file in find_file(os.path.join(RESOURCE_PATH, path), '.mp4'):
+        movie_list.append("//{0}/ddd/{1}/{2}".format(host, path, file).replace('\\', '/'))
+
     detail = {
-        "photos":find_file(path, ".jpg", web_dir="//%s/ddd/" % host, filter_word="QR-1024"),
-        "movies":find_file(path, ".mp4", web_dir="//%s/ddd/" % host, filter_word="QR-1024")
+        "photos":photo_list,
+        "movies":movie_list
     }
-    # 添加视频路径的\ 转 换成 /  。。好无语。
-    movies = []
-    for movie in detail['movies']:
-        movies.append(movie.replace('\\','/'))
-    detail['movies'] = movies
+
     try:
         detail['movies'].sort(reverse=True)
         detail['title'] = os.path.basename(detail['movies'][0])
