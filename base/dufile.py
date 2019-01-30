@@ -14,7 +14,7 @@ from http_base import get_url_host
 from config import RESOURCE_PATH
 from download_movie import Down_Load
 from download_movie2 import download_sync
-from config import DUFILE_USERNAME, DUFILE_PASSWORD
+from config import DUFILE_USERNAME, DUFILE_PASSWORD, is_proxy, local_proxy
 from cat_photo import yun_da_ma
 from unzip_file import unzip_file
 from log_config import init_log
@@ -30,7 +30,10 @@ class DuFile():
         self.url = "http://dufile.com/member/"
         self.host = get_url_host(self.url)
         self.dir_name_id = []
-        self.proxies = {'http': 'http://localhost:1080', 'https': 'http://localhost:1080'}
+        if is_proxy:
+            self.proxies = {'http': local_proxy, 'https': local_proxy}
+        else:
+            self.proxies = {}
 
         # 初始化cookie环境
         self.cookie_path = "cookie.txt"

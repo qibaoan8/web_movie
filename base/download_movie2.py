@@ -88,10 +88,13 @@ class Download(threading.Thread):
 
                 # for 循环之后，如果buffer里面还有数据，追加一下。
                 if write_buffer: fd.write(write_buffer)
+                log.info("download finish, receive done.")
             # 下载数据流程正确
             self.status = True
+            log.info("close download file finish.")
             # 更名为新名字
             os.rename(self.filename_tmp, self.filename)
+            log.info("rename file name finish.")
         # 关闭了所有连接，下载结束
         self.finish = True
         return
