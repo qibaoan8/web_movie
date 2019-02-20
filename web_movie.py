@@ -11,7 +11,8 @@ Author: wang.gaofei@alibaba-inc.com
 """
 from flask import Flask, render_template, request, redirect, url_for, session, g
 import config,os
-from base.find_file import find_file
+from urllib import unquote
+from base.find_file import find_file, find_file_keys
 from base.update_db import scan_local_path
 from exts import db
 from models import Movies
@@ -53,11 +54,11 @@ def index():
 def detail(path):
 
     photo_list = []
-    for file in find_file(os.path.join(RESOURCE_PATH,path),'.jpg'):
+    for file in find_file_keys(os.path.join(RESOURCE_PATH,path),config.PHOTO_FORMANT):
         photo_list.append("/ddd/{0}/{1}".format(path, file).replace('\\','/'))
 
     movie_list = []
-    for file in find_file(os.path.join(RESOURCE_PATH, path), '.mp4'):
+    for file in find_file_keys(os.path.join(RESOURCE_PATH, path), config.MOVIE_FORMANT):
         movie_list.append("/ddd/{0}/{1}".format(path, file).replace('\\', '/'))
     movie = Movies.query.filter(Movies.detail_path == path).first()
 
@@ -85,7 +86,7 @@ def update():
 @app.route('/update_collection_score/',methods=['POST'])
 def update_collection_score():
     # update_collection_score_func()
-    detail_path = request.form.get('path')
+    detail_path = unquote(request.form.get('path'))
     movie_score = request.form.get('score')
     movie = Movies.query.filter(Movies.detail_path==detail_path).first()
     movie.score = movie_score

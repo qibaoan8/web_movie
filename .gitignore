@@ -20,3 +20,4 @@ base/build/
 base/dist/
 PythonService.spec
 base/PythonService.spec
+migrations/

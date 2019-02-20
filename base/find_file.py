@@ -16,12 +16,17 @@ from str_coding import str_coding
 reload(sys)
 sys.setdefaultencoding( "utf-8" )
 
+def find_file_keys(find_path, end_key_works, filter_word=["QR-1024"]):
+    ret_file = []
+    for key in end_key_works:
+        ret_file += find_file(find_path, key, filter_word)
+    return ret_file
+
 def find_file(find_path, end_key_work, filter_word=["QR-1024"]):
     """
 
     :param find_dir:
     :param end_key_work:
-    :param web_dir:
     :param filter_word:
     :return:
     """

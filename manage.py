@@ -30,6 +30,9 @@ manager.add_command('db',MigrateCommand)
 if __name__ == '__main__':
     manager.run()
 
-
+    # 在cmd 内执行以下命令
+    # python manage.py db init
+    # python manage.py db migrate
+    # python manage.py db upgrade
 
 
