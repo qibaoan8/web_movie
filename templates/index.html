@@ -6,14 +6,54 @@
 
 </head>
 <body>
+
+<script>
+    function set_button_color(id) {
+        if (id!=0) {
+            $(".score button").css('background-color','');
+            $("#score_" + id).css('background-color','pink');
+        }
+    }
+
+    function get_to(number){
+        window.location.href="/index/?score="+number; //需要跳转的地址
+    };
+</script>
+
+<div class="score">
+    <h4>选择影片类型：(0分是未分配的)</h4>
+    {% for score in index.score_list %}
+        {% if score == index.score %}
+            <button
+                type="button"
+                id="score_{{ score }}"
+                onclick="get_to({{ score }})"
+                style="background-color: lightgreen;">
+                {{ score }}分
+            </button>
+        {% else %}
+            <button
+                type="button"
+                id="score_{{ score }}"
+                onclick="get_to({{ score }})">
+                {{ score }}分
+            </button>
+        {% endif %}
+
+    {% endfor %}
+
+
+
+</div>
+
 <div id="photo_group">
-    {% for item in items %}
+    {% for item in index.photos %}
+        <h2>
         <a href="{{ item.url }}">
             {{ item.name }}
-            <br>
             <img src="{{ item.photo_url }}" alt="" style="max-width:100%; height: auto;">
         </a>
-        <br>
+        </h2>
     {% endfor %}
 </div>
 

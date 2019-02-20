@@ -23,7 +23,7 @@ class Movies(db.Model):
     detail_path = db.Column(db.String(100),nullable=False)
     photo_path = db.Column(db.String(100),nullable=False)
     is_del = db.Column(db.Boolean,default=False)
-    is_collection = db.Column(db.Boolean,default=False)
+    score = db.Column(db.Integer, default=0)
 
 
 

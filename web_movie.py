@@ -24,37 +24,50 @@ app.config.from_object(config)
 db.init_app(app)
 
 @app.route('/')
+@app.route('/index/')
 def index():
-    movies = Movies.query.filter(Movies.is_del==False).order_by('-create_time')
+    score = request.args.get('score')
+    score = 0 if not score else int(score)
+    # if not score: score = 0
+    movies = Movies.query.filter(Movies.is_del==False, Movies.score==score).order_by('-create_time')
 
     items = []
     for movie in movies:
         item={
             "name":movie.name,
             "url":url_for('detail',path=movie.detail_path),
-            "photo_url":"ddd/%s/%s" % (movie.detail_path,movie.photo_path)
+            "photo_url":"/ddd/%s/%s" % (movie.detail_path,movie.photo_path)
         }
         items.append(item)
 
-    return render_template('index.html', items=items)
+    index = {
+        'photos':items,
+        'score_list':range(0,6),
+        'score':score,
+    }
+
+    return render_template('index.html', index=index)
 
 
 @app.route('/detail/<path>/')
 def detail(path):
-    host = request.headers.get('Host')
 
     photo_list = []
     for file in find_file(os.path.join(RESOURCE_PATH,path),'.jpg'):
-        photo_list.append("//{0}/ddd/{1}/{2}".format(host, path, file).replace('\\','/'))
+        photo_list.append("/ddd/{0}/{1}".format(path, file).replace('\\','/'))
 
     movie_list = []
     for file in find_file(os.path.join(RESOURCE_PATH, path), '.mp4'):
-        movie_list.append("//{0}/ddd/{1}/{2}".format(host, path, file).replace('\\', '/'))
+        movie_list.append("/ddd/{0}/{1}".format(path, file).replace('\\', '/'))
+    movie = Movies.query.filter(Movies.detail_path == path).first()
+
 
     detail = {
         "photos":photo_list,
         "movies":movie_list
     }
+    detail['score_list'] = range(0,6)
+    detail['score'] = movie.score
 
     try:
         detail['movies'].sort(reverse=True)
@@ -69,6 +82,15 @@ def update():
     scan_local_path()
     return u"本地数据扫描完毕。"
 
+@app.route('/update_collection_score/',methods=['POST'])
+def update_collection_score():
+    # update_collection_score_func()
+    detail_path = request.form.get('path')
+    movie_score = request.form.get('score')
+    movie = Movies.query.filter(Movies.detail_path==detail_path).first()
+    movie.score = movie_score
+    db.session.commit()
+    return "ok"
 
 @app.route('/hello/')
 def hello():
