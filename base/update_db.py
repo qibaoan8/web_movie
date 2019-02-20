@@ -43,8 +43,18 @@ def inset_db_from_local(movie_name, detail_path, photo_path):
 
 
 def scan_local_path():
+    # 扫描本地所有的文件夹，把电影名称和路径都加载进去
+
+    # 获取已经扫描过的列表
+    scaned_path_list = []
+    scaned_path_table = Movies.query.filter().all()
+    for movie in scaned_path_table:
+        scaned_path_list.append(movie.detail_path)
+
     path_list = os.listdir(RESOURCE_PATH)
     for path in path_list:
+        if path in scaned_path_list:
+            continue
         all_path = os.path.join(RESOURCE_PATH, path)
 
         if os.path.isdir(all_path):
