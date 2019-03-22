@@ -30,10 +30,8 @@ class DuFile():
         self.url = "http://dufile.com/member/"
         self.host = get_url_host(self.url)
         self.dir_name_id = []
-        if is_proxy:
-            self.proxies = {'http': local_proxy, 'https': local_proxy}
-        else:
-            self.proxies = {}
+        self.http_timeout = 10 # 秒
+        self.proxies = {'http': local_proxy, 'https': local_proxy}
 
         # 初始化cookie环境
         self.cookie_path = "cookie.txt"
@@ -43,19 +41,42 @@ class DuFile():
         if os.path.exists(self.cookie_path):
             self.session.cookies.load(ignore_discard=True, ignore_expires=True)
 
+    def request_http(self, url, data=None, headers=None):
+        """
+        类似一个请求工具，自动添加重试，或者自动添加代理
+        :param url:
+        :param data:
+        :return: response
+        """
+        def _request_http(http_session,url,data,proxies,timeout,headers):
+            if data:
+                response = http_session.post(url, data, proxies=proxies, timeout=timeout,headers=headers)
+            else:
+                response = http_session.get(url, proxies=proxies, timeout=timeout,headers=headers)
+            return response
+
+        try:
+            proxies = {}
+            response = _request_http(self.session, url, data, proxies, self.http_timeout,headers)
+        except:
+            proxies = self.proxies
+            response = _request_http(self.session, url, data, proxies, self.http_timeout,headers)
+
+        return response
+
     def check_login(self, key=DUFILE_USERNAME):
         url = 'http://dufile.com/member/'
-        res = self.session.get(url, proxies=self.proxies)
+        res = self.request_http(url)
         if res.content.find(key) != -1:
             return True
         return False
 
     def login(self, username, passpord):
         index_url = 'http://dufile.com/'
-        self.session.get(index_url, proxies=self.proxies)
+        self.request_http(index_url)
 
         verify_url = 'http://dufile.com/yzm.php'
-        res = self.session.get(verify_url, proxies=self.proxies)
+        res = self.request_http(verify_url)
         verify_text = yun_da_ma(res.content)
         log.info('正在登陆-验证码识别:%s' % verify_text)
         login_url = 'http://dufile.com/post.php'
@@ -68,7 +89,7 @@ class DuFile():
         headers = {
             'Referer': 'http://dufile.com/'
         }
-        res = self.session.post(login_url, data, headers=headers, proxies=self.proxies)
+        res = self.request_http(login_url, data, headers=headers)
         log.info('登陆请求发送结果:%s' % res.content)
 
         return self.check_login()
@@ -78,7 +99,7 @@ class DuFile():
         return
 
     def get_file_list(self):
-        html_body = self.session.get(self.url, proxies=self.proxies).content
+        html_body = self.request_http(self.url).content
         file_list = []
 
         file_id = 0  # 初始化一个默认的值
@@ -95,7 +116,7 @@ class DuFile():
                 file_page_url = line.split('href="')[1].split('"')[0]
                 file_page_url = "http://dufile.com/vip/" + os.path.basename(file_page_url)
                 log.info('find file name is: {}'.format(file_name))
-                _html_body = self.session.get(file_page_url, proxies=self.proxies).content
+                _html_body = self.request_http(file_page_url).content
                 urls = []
                 log.info('get file url info.')
                 for line in _html_body.split("\n"):
@@ -119,7 +140,7 @@ class DuFile():
     def get_dir_id_list(self):
         import re
         dir_list = []
-        html_body = self.session.get(self.url, proxies=self.proxies).content
+        html_body = self.request_http(self.url).content
         for line in html_body.split("\n"):
             if line.find('var folder=') != -1:
                 for dir in line.split('option value="'):
@@ -153,7 +174,7 @@ class DuFile():
         headers = {
             "Referer": "http://dufile.com/member/?folderid=%s&order=sizedown" % src_dir_id
         }
-        res = self.session.post(url, data=post_data, headers=headers, proxies=self.proxies)
+        res = self.request_http(url, data=post_data, headers=headers)
         return res.content
 
 def start():
