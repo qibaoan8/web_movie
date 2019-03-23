@@ -32,5 +32,8 @@ def str_coding(text):
             try:
                 text = text.decode('utf-8')
             except:
-                pass
+                try:
+                    text = text.decode('gb18030')
+                except:
+                    pass
     return text

@@ -115,6 +115,7 @@ def download_sync(down_object, timeout=3600):
         time.sleep(3)
         sleep_time += 3
         if sleep_time > timeout:
+            download.terminate()
             return False
     return True
 
