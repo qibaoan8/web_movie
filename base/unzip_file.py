@@ -60,7 +60,7 @@ def unzip_file(file_name, filter_words=['.mht','.url','QR-1024','htm']):
             fo.write(file_data)
             fo.close()
     zip_file.close()
-    # os.remove(file_name)
+    os.remove(file_name)
 
 if __name__ == '__main__':
     from convert_video import find_convert

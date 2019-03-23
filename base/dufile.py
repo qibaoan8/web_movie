@@ -243,7 +243,7 @@ def start():
         if download_status:
             log.info('下载完毕，正在将文件移动到已下载目录')
             df.mv_dir(file_id, 0, 1)  # 1 已下载
-            log.info('目录移动完毕，正在解压文件')
+            log.info('目录移动完毕，正在解压文件，解压完会自动删除')
             unzip_file(os.path.join(down_local_path, file_name))
             log.info('文件解压完毕,开始转换视频文件')
             find_convert(os.path.join(down_local_path, file_name)[:-4])
