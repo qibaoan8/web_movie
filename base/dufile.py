@@ -20,6 +20,8 @@ from unzip_file import unzip_file
 from log_config import init_log
 from testing_speed import testing_speed
 from convert_video import find_convert
+from super_queue import Super_Queue
+from convert_video import Video
 
 file_path = os.path.abspath(os.path.dirname(__file__))
 log = init_log("dufile_logic", "../logs/")
@@ -55,12 +57,17 @@ class DuFile():
                 response = http_session.get(url, proxies=proxies, timeout=timeout,headers=headers)
             return response
 
-        try:
-            proxies = {}
-            response = _request_http(self.session, url, data, proxies, self.http_timeout,headers)
-        except:
-            proxies = self.proxies
-            response = _request_http(self.session, url, data, proxies, self.http_timeout,headers)
+        for i in range(3):
+            try:
+                proxies = {}
+                response = _request_http(self.session, url, data, proxies, self.http_timeout,headers)
+            except:
+                try:
+                    proxies = self.proxies
+                    response = _request_http(self.session, url, data, proxies, self.http_timeout,headers)
+                except:
+                    import time
+                    time.sleep(5)
 
         return response
 
@@ -180,6 +187,11 @@ class DuFile():
 def start():
     down_local_path = RESOURCE_PATH
     df = DuFile()
+    video = Video()
+
+    # 启动ffmpeg异步转换队列
+    convert_queue = Super_Queue(2)
+    convert_queue.start(video.convert_video_code)
 
     while True:
         log.info('开始判断登陆状态')
@@ -245,9 +257,8 @@ def start():
             df.mv_dir(file_id, 0, 1)  # 1 已下载
             log.info('目录移动完毕，正在解压文件，解压完会自动删除')
             unzip_file(os.path.join(down_local_path, file_name))
-            log.info('文件解压完毕,开始转换视频文件')
-            find_convert(os.path.join(down_local_path, file_name)[:-4])
-            log.info("视频文件转换完毕")
+            log.info('文件解压完毕, 检查视频是否需要转换')
+            find_convert(os.path.join(down_local_path, file_name)[:-4], convert_queue)
         else:
             log.info("下载超时，重新刷新再下载")
 
