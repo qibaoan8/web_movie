@@ -30,7 +30,7 @@ def index():
     score = request.args.get('score')
     score = 0 if not score else int(score)
     # if not score: score = 0
-    movies = Movies.query.filter(Movies.is_del==False, Movies.score==score).order_by('-create_time')
+    movies = Movies.query.filter(Movies.is_del==False, Movies.score==score).order_by('create_time')
 
     items = []
     for movie in movies:
