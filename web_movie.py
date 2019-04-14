@@ -58,8 +58,16 @@ def detail(path):
         photo_list.append("/ddd/{0}/{1}".format(path, file).replace('\\','/'))
 
     movie_list = []
+    movie_number = 0
     for file in find_file_keys(os.path.join(RESOURCE_PATH, path), config.MOVIE_FORMANT):
-        movie_list.append("/ddd/{0}/{1}".format(path, file).replace('\\', '/'))
+        o_movie = {}
+        o_movie['url'] = "/ddd/{0}/{1}".format(path, file).replace('\\', '/')
+        tmp_number = len(photo_list) - movie_number - 1
+        if tmp_number < 0: tmp_number = 0
+        o_movie['poster'] = photo_list[tmp_number]
+        movie_number += 1
+
+        movie_list.append(o_movie)
     movie = Movies.query.filter(Movies.detail_path == path).first()
 
 

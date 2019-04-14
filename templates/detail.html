@@ -11,6 +11,10 @@
             max-width:100%;
             height: auto;
         }
+        .movie_group video {
+            max-width:100%;
+            height: auto;
+        }
     </style>
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
 </head>
@@ -75,9 +79,9 @@
 
 
 
-<div id="movie_group">
+<div class="movie_group">
     {% for movie in detail.movies %}
-        <video src="{{ movie }}" controls="controls"></video>
+        <video src="{{ movie.url }}" controls="controls" poster="{{ movie.poster }}"></video>
     {% endfor %}
 </div>
 
