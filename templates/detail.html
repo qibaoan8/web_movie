@@ -87,5 +87,31 @@
 
 
 
+<div class="score">
+    为影片评分：
+    {% for button_id in detail.score_list %}
+        {% if button_id == detail.score %}
+            <button
+                    type="button"
+                    id="score_{{ button_id }}"
+                    onclick="score({{ button_id }})"
+                    style="background-color: pink;">
+                            {{ button_id }}分
+            </button>
+        {% else %}
+            <button
+                    type="button"
+                    id="score_{{ button_id }}"
+                    onclick="score({{ button_id }})">
+                {{ button_id }}分
+            </button>
+        {% endif %}
+
+    {% endfor %}
+    <br>
+    <br>
+</div>
+
+
 </body>
 </html>

@@ -80,7 +80,7 @@ def detail(path):
 
     try:
         detail['movies'].sort(reverse=True)
-        detail['title'] = os.path.basename(detail['movies'][0])
+        detail['title'] = os.path.basename(detail['movies'][0]['url'])
     except:
         detail['title'] = u"未找到文件名"
 
